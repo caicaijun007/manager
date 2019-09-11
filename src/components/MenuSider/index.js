@@ -27,6 +27,8 @@ class MenuSider extends PureComponent {
         });
 
         localStorage.setItem("_menuitem", JSON.stringify(currentKey));
+        // 切换菜单，清理上次查询条件
+        localStorage.setItem("_search", []);
 
         const { dispatch } = this.props;
         dispatch(switchMenuOption(item.props.eventKey));

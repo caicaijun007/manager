@@ -116,8 +116,7 @@ class BasicTable extends PureComponent {
             },
             {
                 title: '爱好',
-                dataIndex: 'interest'
-                ,
+                dataIndex: 'interest',
                 render(data) {
                     let config = {
                         '1': '游泳',
@@ -146,14 +145,8 @@ class BasicTable extends PureComponent {
             }
         ];
 
-        const { page, page_size, total_count, showSizeChanger, showQuickJumper, selectedRowKeys } = this.state;
-        const pagination = {
-            page,
-            page_size,
-            total_count,
-            showSizeChanger,
-            showQuickJumper
-        }
+        const { selectedRowKeys } = this.state;
+        const pagination = { ...this.state };
 
         return (
             <Fragment>

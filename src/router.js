@@ -23,6 +23,7 @@ import Role from './pages/main/role';
 import User from './pages/main/user';
 import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
+import Demo from './pages/demo';
 
 class Router extends PureComponent {
 
@@ -55,6 +56,7 @@ class Router extends PureComponent {
                                     <Route path='/text' component={Rich} />
                                     <Route path='/main/role' component={Role} />
                                     <Route path='/main/user' component={User} />
+                                    <Route path='/demo' component={Demo} />
                                     <Redirect to="/login" />
                                 </Switch>
                             </BaseLayout>
