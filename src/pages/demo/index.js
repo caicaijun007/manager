@@ -64,7 +64,7 @@ class Demo extends PureComponent {
                 if (search.product_time) {
                     search.product_time = moment(search.product_time).format('YYYY-MM-DD');
                 }
-                this.request(this.state.page, this.state.page_size, search);
+                this.request(1, this.state.page_size, search);
             }
         })
     }
