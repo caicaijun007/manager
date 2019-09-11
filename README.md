@@ -2,7 +2,7 @@
 
 一、后台管理的效果图如下：
 
-![manager](https://github.com/caicaijun007/manager/blob/master/public/readme/manager.gif)
+![manager](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/manager.gif)
 
 
 
@@ -28,23 +28,33 @@
 
 1、是否登陆登录，防止未登录越权操作（滑动菜单操作处理）
 
-![1568104874511](https://github.com/caicaijun007/manager/blob/master/public/readme/1568104874511.png)
+![1568104874511](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568104874511.png)
 
 2、父级菜单切换
 
-![1568105125016](https://github.com/caicaijun007/manager/blob/master/public/readme/1568105125016.png)
+![1568105125016](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568105125016.png)
 
 3、拦截哈希路由地址改变，越权操作
 
-![1568105319450](https://github.com/caicaijun007/manager/blob/master/public/readme/1568105319450.png)
+![1568105319450](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568105319450.png)
 
 4、登录之后，显示账号对应角色菜单（菜单递归过滤）
 
-![1568105568466](https://github.com/caicaijun007/manager/blob/master/public/readme/1568105568466.png)
+![1568105568466](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568105568466.png)
 
 5、面包屑处理
 
-![1568106146423](https://github.com/caicaijun007/manager/blob/master/public/readme/1568106146423.png)
+![1568106146423](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568106146423.png)
+
+6、刷新浏览器后查询条件和数据没保存（本地存储查询条件）
+
+①、初始化state获取本地存储
+
+![1568209179809](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568209179809.png)
+
+②、请求数据成功返回时，存储本地数据，派发动作
+
+![1568209301638](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568209301638.png)
 
 
 
