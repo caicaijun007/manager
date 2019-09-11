@@ -1,15 +1,13 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Card, Form, InputNumber, DatePicker, Radio, Select, Button } from 'antd';
+import { Card } from 'antd';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
+import Search from '../../components/Search';
 import Axios from '../../utils/axios';
 import { connect } from 'react-redux';
 import { searchData } from '../../store/actionCreater';
 import moment from 'moment';
 import './index.less';
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
-const Option = Select.Option;
 
 class Demo extends PureComponent {
 
@@ -56,17 +54,11 @@ class Demo extends PureComponent {
         })
     }
 
-    handleSubmit = (e) => {
-        e && e.preventDefault();
-        this.props.form.validateFields((err, value) => {
-            if (!err) {
-                let search = this.props.form.getFieldsValue();
-                if (search.product_time) {
-                    search.product_time = moment(search.product_time).format('YYYY-MM-DD');
-                }
-                this.request(1, this.state.page_size, search);
-            }
-        })
+    searchDataSubmit = (search) => {
+        if (search.product_time) {
+            search.product_time = moment(search.product_time).format('YYYY-MM-DD');
+        }
+        this.request(1, this.state.page_size, search);
     }
 
     // 改变分页显示条数
@@ -75,7 +67,6 @@ class Demo extends PureComponent {
     }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
         const columns = [
             {
                 title: 'ID',
@@ -123,73 +114,64 @@ class Demo extends PureComponent {
         const { search } = this.state;
         const pagination = { ...this.state };
 
+        const searchConfig = [
+            {
+                searchType: 'select',
+                label: '手机型号',
+                dateKey: 'product_name',
+                initValue: search.product_name ? search.product_name : '0',
+                optionList: [
+                    { 'key': '0', 'value': '全部' },
+                    { 'key': '1', 'value': '华为' },
+                    { 'key': '2', 'value': '小米' },
+                    { 'key': '3', 'value': 'OPPO' },
+                    { 'key': '4', 'value': '三星' },
+                    { 'key': '5', 'value': 'apple' }
+                ]
+            },
+            {
+                searchType: 'select',
+                label: '款式',
+                dateKey: 'product_color',
+                initValue: search.product_color ? search.product_color : '0',
+                optionList: [
+                    { 'key': '0', 'value': '全部' },
+                    { 'key': '1', 'value': '梦幻蓝' },
+                    { 'key': '2', 'value': '魅惑红' },
+                    { 'key': '3', 'value': '优雅黑' },
+                    { 'key': '4', 'value': '土豪金' },
+                    { 'key': '5', 'value': '华丽白' }
+                ]
+            },
+            {
+                searchType: 'input_number',
+                label: '价格',
+                dateKey: 'product_price',
+                initValue: search.product_price
+            },
+            {
+                searchType: 'radio_group',
+                label: '库存',
+                dateKey: 'product_store',
+                initValue: search.product_store ? search.product_store : '1',
+                radioList: [
+                    { 'key': '1', 'value': '有' },
+                    { 'key': '0', 'value': '无' }
+                ]
+            },
+            {
+                searchType: 'date_picker',
+                label: '发布日期',
+                dateKey: 'product_time',
+                initValue: search.product_time,
+                showTime: false
+            }
+        ];
+
         return (
             <Fragment>
                 <Card className='card-wrapper'>
-                    <Form layout='inline'>
-                        <FormItem label='手机型号'>
-                            {
-
-                                getFieldDecorator('product_name', {
-                                    initialValue: search.product_name ? search.product_name : '0'
-                                })(
-                                    <Select className='select-option'>
-                                        <Option value="0">全部</Option>
-                                        <Option value="1">华为</Option>
-                                        <Option value="2">小米</Option>
-                                        <Option value="3">OPPO</Option>
-                                        <Option value="4">三星</Option>
-                                        <Option value="5">apple</Option>
-                                    </Select>
-                                )
-                            }
-
-                        </FormItem>
-                        <FormItem label='款式'>
-                            {
-                                getFieldDecorator('product_color', {
-                                    initialValue: search.product_color ? search.product_color : '0'
-                                })(
-                                    <Select className='select-option'>
-                                        <Option value="0">全部</Option>
-                                        <Option value="1">梦幻蓝</Option>
-                                        <Option value="2">魅惑红</Option>
-                                        <Option value="3">优雅黑</Option>
-                                        <Option value="4">土豪金</Option>
-                                        <Option value="5">华丽白</Option>
-                                    </Select>
-                                )
-                            }
-                        </FormItem>
-                        <FormItem label='价格'>
-                            {
-                                getFieldDecorator('product_price', {
-                                    initialValue: search.product_price
-                                })(
-                                    <InputNumber />)
-                            }
-                        </FormItem>
-                        <FormItem label='库存'>
-                            {
-                                getFieldDecorator('product_store', {
-                                    initialValue: search.product_store ? search.product_store : '1'
-                                })(
-                                    <RadioGroup>
-                                        <Radio value='1'>有</Radio>
-                                        <Radio value='0'>无</Radio>
-                                    </RadioGroup>)
-                            }
-                        </FormItem>
-                        <FormItem label='发布日期'>
-                            {
-                                getFieldDecorator('product_time', {
-                                    initialValue: search.product_time
-                                })(
-                                    <DatePicker className='date-picker' />)
-                            }
-                        </FormItem>
-                        <Button type='primary' onClick={this.handleSubmit}>查询</Button>
-                    </Form>
+                    <Search searchConfig={searchConfig} searchDataSubmit={this.searchDataSubmit} />
                 </Card>
                 <Card className='card-wrapper card-diffrent'>
                     <Table
@@ -210,4 +192,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Form.create()(Demo));
+export default connect(mapStateToProps)(Demo);
