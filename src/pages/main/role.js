@@ -58,7 +58,6 @@ class Role extends PureComponent {
 
     changeRow = (selectedRowKeys, selectedRows) => {
         selectedRowKeys = [selectedRowKeys];
-        selectedRows = selectedRows[0];
         this.setState({
             selectedRowKeys,
             selectedRows
@@ -103,7 +102,7 @@ class Role extends PureComponent {
             return;
         }
         let menuInfo = this.state.selectedRows.menus;
-        menuInfo = menuInfo.split(',');
+        menuInfo = menuInfo ? menuInfo.split(',') : [];
         this.setState({
             menuInfo,
             showSetPermission: true,

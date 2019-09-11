@@ -9,9 +9,9 @@ class TableLayout extends PureComponent {
         const { tableType, columns, dataSource, changeSelected, changeRow, scroll, selectedRowKeys, rowKey } = this.props;
         const rowSelection = {
             type: 'radio',
-            selectedRowKeys: selectedRowKeys ? selectedRowKeys[0] : 0,
+            selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
-                changeRow(selectedRowKeys, selectedRows);
+                changeRow(selectedRowKeys[0], selectedRows[0]);
             }
         }
         const rowCheckSelection = {
@@ -42,6 +42,13 @@ class TableLayout extends PureComponent {
                         columns={columns}
                         dataSource={dataSource}
                         rowSelection={rowSelection}
+                        onRow={(selectedRows, selectedRowKeys) => {
+                            return {
+                                onClick: () => {
+                                    changeRow(selectedRowKeys, selectedRows);
+                                }, // 点击行
+                            };
+                        }}
                         pagination={false}
                     />
                 }
