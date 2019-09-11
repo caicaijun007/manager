@@ -8,11 +8,16 @@ import Pagination from '../../components/Pagination';
 import PermissonForm from './rolePermissionForm';
 import RoleForm from './roleForm';
 import Table from '../../components/Table';
+import Search from '../../components/Search';
+import { connect } from 'react-redux';
+import { searchData } from '../../store/actionCreater';
 import './main.less';
 
 class Role extends PureComponent {
 
     state = {
+        search: localStorage.getItem("_search") ? JSON.parse(localStorage.getItem("_search")) : [],
+        roleList: [],
         showCreateRole: false,
         showSetPermission: false,
         page: 1,
@@ -24,15 +29,17 @@ class Role extends PureComponent {
 
     componentDidMount() {
         this.request();
+        this.getRoleList();
     }
 
-    request = (page, pageSize) => {
+    request = (page, pageSize, search = this.state.search) => {
         Axios.ajax({
             url: '/role_list',
             data: {
                 params: {
                     page: page ? page : this.state.page,
-                    total: pageSize ? pageSize : this.state.page_size
+                    total: pageSize ? pageSize : this.state.page_size,
+                    ...search
                 }
             }
         }).then((res) => {
@@ -40,6 +47,9 @@ class Role extends PureComponent {
                 res.result.map((item, index) => {
                     return item.key = index;
                 });
+                localStorage.setItem("_search", JSON.stringify(search));
+                const { dispatch } = this.props;
+                dispatch(searchData(search));
                 this.setState({
                     dataSource: res.result,
                     selectedRowKeys: '',
@@ -50,6 +60,34 @@ class Role extends PureComponent {
                 })
             }
         })
+    }
+    // 获取角色列表
+    getRoleList = () => {
+        Axios.ajax({
+            url: '/role_list',
+            data: {
+                params: {
+                    type: 1
+                }
+            }
+        }).then(res => {
+            if (res.code === 0) {
+                let roleList = [{ 'key': '1000', 'value': '全部' }];
+                let tempList = {};
+                res.result.forEach(item => {
+                    tempList = {
+                        'key': item.role_id,
+                        'value': item.role_name
+                    }
+                    roleList.push(tempList);
+                });
+                this.setState({ roleList });
+            }
+        })
+    }
+    // 接受子组件传回来的查询参数，重新查询数据
+    searchDataSubmit = (search) => {
+        this.request(1, this.state.page_size, search);
     }
     // 改变分页显示条数
     changePage = (page, pageSize = false) => {
@@ -87,7 +125,7 @@ class Role extends PureComponent {
                     showCreateRole: false
                 })
                 this.roleForm.props.form.resetFields();
-                _this.request();
+                _this.request(1);
                 message.info('创建成功');
             }
         })
@@ -132,7 +170,7 @@ class Role extends PureComponent {
                     window.location.hash = '/#/login';
                     message.success('设置成功');
                 } else {
-                    _this.request();
+                    _this.request(1);
                     message.success('设置成功');
                 }
 
@@ -164,7 +202,7 @@ class Role extends PureComponent {
                     }
                 }).then((res) => {
                     if (res.code === 0) {
-                        _this.request();
+                        _this.request(1);
                         message.success('删除成功');
                     }
                 });
@@ -225,18 +263,42 @@ class Role extends PureComponent {
             }
         ];
 
-        const { page, page_size, total_count, showSizeChanger, showQuickJumper, selectedRowKeys } = this.state;
-        const pagination = {
-            page,
-            page_size,
-            total_count,
-            showSizeChanger,
-            showQuickJumper
-        }
+        const { selectedRowKeys, search, roleList } = this.state;
+        const pagination = { ...this.state };
+
+        const searchConfig = [
+            {
+                searchType: 'select',
+                label: '角色名',
+                dateKey: 'role_name',
+                initValue: search.role_name ? search.role_name : '1000',
+                optionList: roleList
+            },
+            {
+                searchType: 'select',
+                label: '使用状态',
+                dateKey: 'status',
+                initValue: search.status ? search.status : '100',
+                optionList: [
+                    { 'key': '100', 'value': '全部' },
+                    { 'key': '1', 'value': '启用' },
+                    { 'key': '0', 'value': '停用' }
+                ]
+            },
+            {
+                searchType: 'input',
+                label: '授权人',
+                dateKey: 'authorize_user',
+                initValue: search ? search.authorize_user : ''
+            }
+        ];
 
         return (
             <Fragment>
-                <Card title='角色列表' className='card-wrapper'>
+                <Card className='card-wrapper'>
+                    <Search searchConfig={searchConfig} searchDataSubmit={this.searchDataSubmit} />
+                </Card>
+                <Card className='card-wrapper card-diffrent'>
                     <Button type='primary' icon='plus' onClick={this.onCreateRole}>创建角色</Button>
                     <Button type='primary' icon='edit' onClick={this.onSetPermission}>设置权限</Button>
                     <Button type='danger' icon='delete' onClick={this.onDeleteRole}>删除</Button>
@@ -290,4 +352,10 @@ class Role extends PureComponent {
     }
 }
 
-export default Role;
+const mapStateToProps = (state) => {
+    return {
+        search: state.search
+    }
+}
+
+export default connect(mapStateToProps)(Role);

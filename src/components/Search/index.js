@@ -44,7 +44,7 @@ class Search extends PureComponent {
                             getFieldDecorator(item.dateKey, {
                                 initialValue: item.initValue
                             })(
-                                <Input maxLength={8} />)
+                                <Input maxLength={12} />)
                         }
                     </FormItem>);
             } else if (item.searchType === 'input_number') {
@@ -102,7 +102,7 @@ class Search extends PureComponent {
     render() {
         return (
             <Fragment>
-                <Form layout='inline'>
+                <Form layout='inline' className='form-wrapper'>
                     {this.getFormList()}
                     <Button type='primary' onClick={this.handleSubmit}>查询</Button>
                 </Form>
