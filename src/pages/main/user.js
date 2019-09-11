@@ -7,11 +7,16 @@ import Register from '../register';
 import Pagination from '../../components/Pagination';
 import EditForm from './userEditForm';
 import Table from '../../components/Table';
+import Search from '../../components/Search';
+import { connect } from 'react-redux';
+import { searchData } from '../../store/actionCreater';
 import './main.less';
 
 class User extends PureComponent {
 
     state = {
+        search: localStorage.getItem("_search") ? JSON.parse(localStorage.getItem("_search")) : [],
+        roleList: [],
         showEditUserForm: false,
         showCreateUserForm: false,
         page: 1,
@@ -23,19 +28,24 @@ class User extends PureComponent {
 
     componentDidMount() {
         this.request();
+        this.getRoleList();
     }
 
-    request = (page, pageSize) => {
+    request = (page, pageSize, search = this.state.search) => {
         Axios.ajax({
             url: '/user_list',
             data: {
                 params: {
                     page: page ? page : this.state.page,
-                    total: pageSize ? pageSize : this.state.page_size
+                    total: pageSize ? pageSize : this.state.page_size,
+                    ...search
                 }
             }
         }).then((res) => {
             if (res.code === 0) {
+                localStorage.setItem("_search", JSON.stringify(search));
+                const { dispatch } = this.props;
+                dispatch(searchData(search));
                 this.setState({
                     dataSource: res.result,
                     page: res.page,
@@ -45,7 +55,34 @@ class User extends PureComponent {
             }
         })
     }
-
+    // 获取角色列表
+    getRoleList = () => {
+        Axios.ajax({
+            url: '/role_list',
+            data: {
+                params: {
+                    type: 1
+                }
+            }
+        }).then(res => {
+            if (res.code === 0) {
+                let roleList = [{ 'key': '1000', 'value': '全部' }];
+                let tempList = {};
+                res.result.forEach(item => {
+                    tempList = {
+                        'key': item.role_id,
+                        'value': item.role_name
+                    }
+                    roleList.push(tempList);
+                });
+                this.setState({ roleList });
+            }
+        })
+    }
+    // 接受子组件传回来的查询参数，重新查询数据
+    searchDataSubmit = (search) => {
+        this.request(1, this.state.page_size, search);
+    }
     // 改变分页显示条数
     changePage = (page, pageSize = false) => {
         this.request(page, pageSize);
@@ -76,7 +113,7 @@ class User extends PureComponent {
                         }
                     }).then((res) => {
                         if (res.code === 0) {
-                            _this.request();
+                            _this.request(1);
                             message.success('删除成功');
                         }
                     })
@@ -174,7 +211,40 @@ class User extends PureComponent {
             }
         ];
 
-        const pagination = { ...this.state }
+        const { search, roleList } = this.state;
+        const pagination = { ...this.state };
+        const searchConfig = [
+            {
+                searchType: 'select',
+                label: '角色名',
+                dateKey: 'role_name',
+                initValue: search.role_name ? search.role_name : '1000',
+                optionList: roleList
+            },
+            {
+                searchType: 'select',
+                label: '性别',
+                dateKey: 'sex',
+                initValue: search.sex ? search.sex : '100',
+                optionList: [
+                    { 'key': '100', 'value': '全部' },
+                    { 'key': '1', 'value': '男' },
+                    { 'key': '0', 'value': '女' }
+                ]
+            },
+            {
+                searchType: 'input',
+                label: '用户名',
+                dateKey: 'user_name',
+                initValue: search.user_name ? search.user_name : ''
+            },
+            {
+                searchType: 'input_number',
+                label: '年龄',
+                dateKey: 'age',
+                initValue: search.age ? search.age : ''
+            }
+        ];
 
         return (
             <Fragment>
@@ -186,35 +256,41 @@ class User extends PureComponent {
                         }} />
                     </Card> :
                         (
-                            <Card title='用户列表' className='card-wrapper'>
-                                <Button type='primary' icon='plus' onClick={() => {
-                                    this.setState({ showCreateUserForm: true })
-                                }}>创建用户</Button>
-                                <Table
-                                    tableType='default'
-                                    rowKey='uid'
-                                    columns={columns}
-                                    dataSource={this.state.dataSource}
-                                />
-                                <Pagination callback={this.changePage} pagination={pagination} />
-                                <Modal
-                                    title='编辑信息'
-                                    visible={this.state.showEditUserForm}
-                                    okText="确定"
-                                    cancelText="取消"
-                                    onCancel={() => {
-                                        this.setState({
-                                            showEditUserForm: false
-                                        })
-                                        this.editForm.props.form.resetFields();
-                                    }}
-                                    onOk={this.onEditUserInfo}>
-                                    <EditForm
-                                        userInfo={this.state.userInfo}
-                                        wrappedComponentRef={(inst) => { this.editForm = inst }}
+                            <Fragment>
+                                <Card className='card-wrapper'>
+                                    <Search searchConfig={searchConfig} searchDataSubmit={this.searchDataSubmit} />
+                                </Card>
+                                <Card className='card-wrapper card-diffrent'>
+
+                                    <Button type='primary' icon='plus' onClick={() => {
+                                        this.setState({ showCreateUserForm: true })
+                                    }}>创建用户</Button>
+                                    <Table
+                                        tableType='default'
+                                        rowKey='uid'
+                                        columns={columns}
+                                        dataSource={this.state.dataSource}
                                     />
-                                </Modal>
-                            </Card>
+                                    <Pagination callback={this.changePage} pagination={pagination} />
+                                    <Modal
+                                        title='编辑信息'
+                                        visible={this.state.showEditUserForm}
+                                        okText="确定"
+                                        cancelText="取消"
+                                        onCancel={() => {
+                                            this.setState({
+                                                showEditUserForm: false
+                                            })
+                                            this.editForm.props.form.resetFields();
+                                        }}
+                                        onOk={this.onEditUserInfo}>
+                                        <EditForm
+                                            userInfo={this.state.userInfo}
+                                            wrappedComponentRef={(inst) => { this.editForm = inst }}
+                                        />
+                                    </Modal>
+                                </Card>
+                            </Fragment>
                         )
                 }
             </Fragment>
@@ -222,4 +298,10 @@ class User extends PureComponent {
     }
 }
 
-export default User;
+const mapStateToProps = (state) => {
+    return {
+        search: state.search
+    }
+}
+
+export default connect(mapStateToProps)(User);

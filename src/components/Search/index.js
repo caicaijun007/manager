@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Form, Input, InputNumber, DatePicker, Radio, Select, Button } from 'antd';
+import moment from 'moment';
 import './index.less';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -89,7 +90,7 @@ class Search extends PureComponent {
                     <FormItem label={item.label} key={item.dateKey}>
                         {
                             getFieldDecorator(item.dateKey, {
-                                initialValue: item.initValue
+                                initialValue: moment(item.initValue)
                             })(<DatePicker className='date-picker' showTime={item.showTime} />)
                         }
                     </FormItem>

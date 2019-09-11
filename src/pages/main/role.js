@@ -170,7 +170,7 @@ class Role extends PureComponent {
                     window.location.hash = '/#/login';
                     message.success('设置成功');
                 } else {
-                    _this.request(1);
+                    _this.request();
                     message.success('设置成功');
                 }
 
@@ -289,7 +289,7 @@ class Role extends PureComponent {
                 searchType: 'input',
                 label: '授权人',
                 dateKey: 'authorize_user',
-                initValue: search ? search.authorize_user : ''
+                initValue: search.authorize_user ? search.authorize_user : ''
             }
         ];
 
