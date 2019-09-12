@@ -5,7 +5,7 @@ import echartTheme from '../../../configs/themeRGB.config';
 // import echarts from 'echarts';
 // 引入 ECharts 主模块
 import echarts from 'echarts/lib/echarts';
-// 引入饼图和折线图
+// 引入柱形图
 import 'echarts/lib/chart/bar';
 // 引入提示框和标题组件
 import 'echarts/lib/component/tooltip';

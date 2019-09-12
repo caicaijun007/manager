@@ -7,9 +7,9 @@ import Axios from '../../utils/axios';
 import { connect } from 'react-redux';
 import { searchData } from '../../store/actionCreater';
 import moment from 'moment';
-import './index.less';
+import './phone.less';
 
-class Demo extends PureComponent {
+class PhoneTable extends PureComponent {
 
     state = {
         search: localStorage.getItem("_search") ? JSON.parse(localStorage.getItem("_search")) : [],
@@ -193,4 +193,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Demo);
+export default connect(mapStateToProps)(PhoneTable);

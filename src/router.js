@@ -24,6 +24,8 @@ import User from './pages/main/user';
 import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
 import Demo from './pages/demo';
+import PhoneTable from './pages/phone/table';
+import PhoneCharts from './pages/phone/charts';
 
 class Router extends PureComponent {
 
@@ -57,6 +59,8 @@ class Router extends PureComponent {
                                     <Route path='/main/role' component={Role} />
                                     <Route path='/main/user' component={User} />
                                     <Route path='/demo' component={Demo} />
+                                    <Route path='/phone/table' component={PhoneTable} />
+                                    <Route path='/phone/charts' component={PhoneCharts} />
                                     <Redirect to="/login" />
                                 </Switch>
                             </BaseLayout>

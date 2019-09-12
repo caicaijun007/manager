@@ -90,7 +90,7 @@ class Search extends PureComponent {
                     <FormItem label={item.label} key={item.dateKey}>
                         {
                             getFieldDecorator(item.dateKey, {
-                                initialValue: moment(item.initValue)
+                                initialValue: item.initValue ? moment(item.initValue) : moment()
                             })(<DatePicker className='date-picker' showTime={item.showTime} />)
                         }
                     </FormItem>

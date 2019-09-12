@@ -229,7 +229,7 @@ class User extends PureComponent {
                 optionList: [
                     { 'key': '100', 'value': '全部' },
                     { 'key': '1', 'value': '男' },
-                    { 'key': '0', 'value': '女' }
+                    { 'key': '2', 'value': '女' }
                 ]
             },
             {
@@ -249,7 +249,7 @@ class User extends PureComponent {
         return (
             <Fragment>
                 {
-                    this.state.showCreateUserForm ? <Card title='注册列表' className='card-wrapper'>
+                    this.state.showCreateUserForm ? <Card className='card-wrapper'>
                         <Register isLogin={true} changeOption={() => {
                             this.setState({ showCreateUserForm: false });
                             this.request();

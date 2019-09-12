@@ -133,5 +133,21 @@ export default [
     path: '/demo',
     name: 'Demo',
     icon: 'project'
+  },
+  {
+    path: '/phone',
+    name: '手机数据',
+    icon: 'project',
+    routes: [
+      {
+        path: '/phone/table',
+        name: '表格数据',
+        icon: 'table',
+      },
+      {
+        path: '/phone/charts',
+        name: '图表数据',
+        icon: 'area-chart',
+      }]
   }
 ];

@@ -1,15 +1,31 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Card } from 'antd';
-import Table from '../../components/Table';
-import Pagination from '../../components/Pagination';
 import Search from '../../components/Search';
 import Axios from '../../utils/axios';
 import { connect } from 'react-redux';
 import { searchData } from '../../store/actionCreater';
+import ReactEcharts from 'echarts-for-react';
+import echartTheme from '../../configs/theme.config';
+// 引入 ECharts 主模块
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/bar';
+import 'echarts/lib/chart/line';
+// 引入提示框和标题组件
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/legend';
+import 'echarts/lib/component/markPoint';
 import moment from 'moment';
-import './index.less';
+import './phone.less';
+const colorList = {
+    '1': '梦幻蓝',
+    '2': '魅惑红',
+    '3': '优雅黑',
+    '4': '土豪金',
+    '5': '华丽白'
+}
 
-class Demo extends PureComponent {
+class PhoneCharts extends PureComponent {
 
     state = {
         search: localStorage.getItem("_search") ? JSON.parse(localStorage.getItem("_search")) : [],
@@ -21,6 +37,10 @@ class Demo extends PureComponent {
         showQuickJumper: true
     }
 
+    UNSAFE_componentWillMount() {
+        echarts.registerTheme('manager', echartTheme);
+    }
+
     componentDidMount() {
         this.request();
     }
@@ -30,6 +50,7 @@ class Demo extends PureComponent {
             url: '/phone_list',
             data: {
                 params: {
+                    charts: true,
                     page: page ? page : this.state.page,
                     total: pageSize ? pageSize : this.state.page_size,
                     ...search
@@ -37,9 +58,6 @@ class Demo extends PureComponent {
             }
         }).then((res) => {
             if (res.code === 0) {
-                res.result.map((item, index) => {
-                    return item.key = index;
-                })
                 localStorage.setItem("_search", JSON.stringify(search));
                 const { dispatch } = this.props;
                 dispatch(searchData(search));
@@ -61,58 +79,125 @@ class Demo extends PureComponent {
         this.request(1, this.state.page_size, search);
     }
 
-    // 改变分页显示条数
-    changePage = (page, pageSize = false) => {
-        this.request(page, pageSize);
+    getOption = () => {
+        let s = this.state.search;
+        let optionData = s.product_color !== '0' ? [colorList[s.product_color]] : [
+            '梦幻蓝',
+            '魅惑红',
+            '优雅黑',
+            '土豪金',
+            '华丽白'
+        ];
+        let option = {
+            title: {
+                text: '手机价格趋势'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['华为', '小米', 'OPPO', '三星', 'apple']
+            },
+            xAxis: {
+                data: optionData
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '华为',
+                    type: 'bar',
+                    data: this.state.dataSource['华为']
+                },
+                {
+                    name: '小米',
+                    type: 'bar',
+                    data: this.state.dataSource['小米']
+                },
+                {
+                    name: 'OPPO',
+                    type: 'bar',
+                    data: this.state.dataSource['OPPO']
+                },
+                {
+                    name: '三星',
+                    type: 'bar',
+                    data: this.state.dataSource['三星']
+                }
+                ,
+                {
+                    name: 'apple',
+                    type: 'bar',
+                    data: this.state.dataSource['apple']
+                }
+            ]
+        }
+
+        return option;
+    }
+
+    getOption2 = () => {
+        let s = this.state.search;
+        let optionData = s.product_color !== '0' ? [colorList[s.product_color]] : [
+            '梦幻蓝',
+            '魅惑红',
+            '优雅黑',
+            '土豪金',
+            '华丽白'
+        ];
+        let option = {
+            title: {
+                text: '手机价格趋势'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['华为', '小米', 'OPPO', '三星', 'apple']
+            },
+            xAxis: {
+                data: optionData
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '华为',
+                    type: 'line',
+                    data: this.state.dataSource['华为']
+                },
+                {
+                    name: '小米',
+                    type: 'line',
+                    data: this.state.dataSource['小米']
+                },
+                {
+                    name: 'OPPO',
+                    type: 'line',
+                    data: this.state.dataSource['OPPO']
+                },
+                {
+                    name: '三星',
+                    type: 'line',
+                    data: this.state.dataSource['三星']
+                }
+                ,
+                {
+                    name: 'apple',
+                    type: 'line',
+                    data: this.state.dataSource['apple']
+                }
+            ]
+        }
+
+        return option;
     }
 
     render() {
-        const columns = [
-            {
-                title: 'ID',
-                dataIndex: 'id'
-            },
-            {
-                title: '手机型号',
-                dataIndex: 'product_name'
-            },
-            {
-                title: '款式',
-                dataIndex: 'product_color',
-                render(color) {
-                    let config = {
-                        '1': '梦幻蓝',
-                        '2': '魅惑红',
-                        '3': '优雅黑',
-                        '4': '土豪金',
-                        '5': '华丽白'
-                    };
-                    return config[color];
-                }
-            },
-            {
-                title: '价格',
-                dataIndex: 'product_price',
-                sorter: (a, b) => a.product_price - b.product_price,
-                render(price) {
-                    return `$${price}`
-                }
-            },
-            {
-                title: '库存',
-                dataIndex: 'product_store',
-                render(store) {
-                    return store === '1' ? '有' : '无';
-                }
-            },
-            {
-                title: '发布日期',
-                dataIndex: 'product_time'
-            }
-        ];
 
         const { search } = this.state;
-        const pagination = { ...this.state };
 
         const searchConfig = [
             {
@@ -175,12 +260,10 @@ class Demo extends PureComponent {
                     <Search searchConfig={searchConfig} searchDataSubmit={this.searchDataSubmit} />
                 </Card>
                 <Card className='card-wrapper card-diffrent'>
-                    <Table
-                        tableType='default'
-                        columns={columns}
-                        dataSource={this.state.dataSource}
-                    />
-                    <Pagination callback={this.changePage} pagination={pagination} />
+                    <ReactEcharts option={this.getOption()} theme='manager' />
+                </Card>
+                <Card className='card-wrapper card-diffrent'>
+                    <ReactEcharts option={this.getOption2()} theme='manager' />
                 </Card>
             </Fragment>
         );
@@ -193,4 +276,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Demo);
+export default connect(mapStateToProps)(PhoneCharts);
