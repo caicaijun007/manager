@@ -81,13 +81,13 @@ class PhoneCharts extends PureComponent {
 
     getOption = () => {
         let s = this.state.search;
-        let optionData = s.product_color !== '0' ? [colorList[s.product_color]] : [
+        let optionData = !s.product_color || s.product_color === '0' ? [
             '梦幻蓝',
             '魅惑红',
             '优雅黑',
             '土豪金',
             '华丽白'
-        ];
+        ] : [colorList[s.product_color]];
         let option = {
             title: {
                 text: '手机价格趋势'
@@ -139,13 +139,13 @@ class PhoneCharts extends PureComponent {
 
     getOption2 = () => {
         let s = this.state.search;
-        let optionData = s.product_color !== '0' ? [colorList[s.product_color]] : [
+        let optionData = !s.product_color || s.product_color === '0' ? [
             '梦幻蓝',
             '魅惑红',
             '优雅黑',
             '土豪金',
             '华丽白'
-        ];
+        ] : [colorList[s.product_color]];
         let option = {
             title: {
                 text: '手机价格趋势'
