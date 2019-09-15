@@ -56,6 +56,14 @@
 
 ![1568209301638](https://github.com/caicaijun007/xiaocaicai07.github.io/blob/master/1568209301638.png)
 
+7、react17生命周期函数改变，componentWillMount替换为UNSAFE_componentWillMount
+```javascript
+   npx react-codemod rename-unsafe-lifecycles
+```
+注意：你的项目执行上面命令可以解决控制台输出的warning，但是你引用的react第三方插件如果不是最新或没有解决和上面一样问题，同样会在控制台输出warning。
+
+
+
 
 
 仅供学习参考

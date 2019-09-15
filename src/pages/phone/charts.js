@@ -90,7 +90,7 @@ class PhoneCharts extends PureComponent {
         ] : [colorList[s.product_color]];
         let option = {
             title: {
-                text: '手机价格趋势'
+                text: '手机价格型号趋势对比'
             },
             tooltip: {
                 trigger: 'axis'
@@ -148,7 +148,7 @@ class PhoneCharts extends PureComponent {
         ] : [colorList[s.product_color]];
         let option = {
             title: {
-                text: '手机价格趋势'
+                text: '手机价格型号趋势对比'
             },
             tooltip: {
                 trigger: 'axis'
@@ -227,30 +227,6 @@ class PhoneCharts extends PureComponent {
                     { 'key': '4', 'value': '土豪金' },
                     { 'key': '5', 'value': '华丽白' }
                 ]
-            },
-            {
-                searchType: 'input_number',
-                label: '价格',
-                dateKey: 'product_price',
-                initValue: search.product_price
-            },
-            {
-                searchType: 'radio_group',
-                label: '库存',
-                dateKey: 'product_store',
-                initValue: search.product_store ? search.product_store : '',
-                radioList: [
-                    { 'key': '', 'value': '全部' },
-                    { 'key': '1', 'value': '有' },
-                    { 'key': '0', 'value': '无' }
-                ]
-            },
-            {
-                searchType: 'date_picker',
-                label: '发布日期',
-                dateKey: 'product_time',
-                initValue: search.product_time,
-                showTime: false
             }
         ];
 

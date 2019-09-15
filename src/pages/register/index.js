@@ -20,7 +20,7 @@ class Register extends PureComponent {
                 userInfo.password = Utils.encrypt(userInfo.password);
                 Axios.ajax({
                     url: '/register',
-                    method: 'post',
+                    method: 'POST',
                     data: {
                         params: {
                             ...userInfo

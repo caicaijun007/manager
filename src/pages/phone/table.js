@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Card } from 'antd';
+import { Card, BackTop } from 'antd';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
 import Search from '../../components/Search';
@@ -171,6 +171,7 @@ class PhoneTable extends PureComponent {
 
         return (
             <Fragment>
+                <BackTop />
                 <Card className='card-wrapper'>
                     <Search searchConfig={searchConfig} searchDataSubmit={this.searchDataSubmit} />
                 </Card>

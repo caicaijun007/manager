@@ -24,7 +24,7 @@ class Login extends PureComponent {
                 userInfo.time = now();
                 Axios.ajax({
                     url: '/login',
-                    method: 'post',
+                    method: 'POST',
                     data: {
                         params: {
                             ...userInfo
